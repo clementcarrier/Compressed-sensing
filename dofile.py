@@ -15,7 +15,9 @@ FACEBOOK DATA BASE
 
 import networkx as nx
 import matplotlib.pyplot as plt
-
+plt.rcParams['lines.linewidth'] = 2
+plt.rcParams['lines.color'] = 'r'
+#plt.rc('lines', linewidth=2, color='r')
 
 G_fb = nx.read_edgelist("facebook.txt", create_using = nx.Graph(), nodetype = int)
 print nx.info(G_fb)
@@ -34,13 +36,15 @@ parts = community.best_partition(G_fb)
 values = [parts.get(node) for node in G_fb.nodes()]
 
 
+
 plt.axis("off")
 nx.draw_networkx(G_fb, pos = spring_pos, cmap = plt.get_cmap("jet"), node_color = values, node_size = 15, with_labels = False)
+nx.draw_networkx(G_fb, pos = spring_pos, cmap = get_cmap(m), node_color = values, node_size = 15, with_labels = False)
 #plt.savefig(graph, format='png')
 
 
-dict.values(parts)[2]
-dict.keys(parts)
+#dict.values(parts)[2]
+#dict.keys(parts)
 
 #dict.items(parts)
 #wanted_keys = [1] # The keys you want
@@ -60,24 +64,66 @@ G_1 = G_fb.subgraph(group1)
 nx.draw_networkx(G_1, pos = spring_pos, cmap = plt.get_cmap("jet"), node_size = 15, with_labels = False)
 
 
+#### Deux communautes #####
 
 group1_2= [None] * 4039
+values1_2= [None] * 4039
 i = 0
 while i in G_fb.nodes():
     if dict.values(parts)[i]==1:
         group1_2[i]=dict.keys(parts)[i]
+        values1_2[i]=dict.values(parts)[i]
     elif dict.values(parts)[i]==2:
         group1_2[i]=dict.keys(parts)[i]
+        values1_2[i]=dict.values(parts)[i]
     else: 
         group1_2[i]=None
+        values1_2[i]=None
     i = i + 1 
 
+#import numpy as np
+#group1_2[1] = np.asarray(group1_2)
 
 
 G_1_2 = G_fb.subgraph(group1_2)
-nx.draw_networkx(G_1_2, pos = spring_pos, cmap = plt.get_cmap("jet"), node_size = 15, with_labels = False)
+values1_2 = [x for x in values1_2 if x != None]
+spring_pos_1_2 = nx.spring_layout(G_1_2)
+
+nx.draw_networkx(G_1_2, pos = spring_pos_1_2, cmap = plt.get_cmap("jet"), width=0.8 ,vmin=0, vmax=6 ,node_color = values1_2, node_size = 10, with_labels = False)
 print nx.info(G_1_2)
 
+
+
+#### Trois communautes #####
+
+group3= [None] * 4039
+values3= [None] * 4039
+i = 0
+while i in G_fb.nodes():
+    if dict.values(parts)[i]==1:
+        group3[i]=dict.keys(parts)[i]
+        values3[i]=dict.values(parts)[i]
+    elif dict.values(parts)[i]==2:
+        group3[i]=dict.keys(parts)[i]
+        values3[i]=dict.values(parts)[i]
+    elif dict.values(parts)[i]==5:
+        group3[i]=dict.keys(parts)[i]
+        values3[i]=dict.values(parts)[i]
+    else: 
+        group3[i]=None
+        values3[i]=None
+    i = i + 1 
+
+#import numpy as np
+#group1_2[1] = np.asarray(group1_2)
+
+
+G_3 = G_fb.subgraph(group3)
+values3 = [x for x in values3 if x != None]
+spring_pos_3 = nx.spring_layout(G_3)
+
+nx.draw_networkx(G_3, pos = spring_pos_3, cmap = plt.get_cmap("jet"), width=0.8 ,vmin=1, vmax=6 ,node_color = values3, node_size = 10, with_labels = False)
+print nx.info(G_3)
 
 
 
@@ -97,13 +143,12 @@ plt.show()
 
 
 
+
 ##### Dendo graph ######
 
 dendo = community.generate_dendogram(G_fb)
 for level in range(len(dendo) - 1) :
    print "partition at level", level, "is", community.partition_at_level(dendo, level)
-
-
 
 
 
