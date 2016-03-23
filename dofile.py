@@ -28,7 +28,18 @@ spring_pos = nx.spring_layout(G_fb)
 plt.axis("off")
 nx.draw_networkx(G_fb, pos = spring_pos, with_labels = False, node_size = 15)
 
+############### Algorithm "Leading eigenvector method" ###############
+#remarque: j'ai appelé le graphe G, pour plus de généralité, si tu veux tester pour FB, renomme G_fb G (c'est plus simple que de tout changer)
+m=G.number_of_edges()
+A=nx.adjacency_matrix(G)
+deg=G.degree(np.arange(0,len(G))) #vecteur des degrés des noeuds (il y a len(G) noeuds)
+k=np.fromiter(iter(deg.values()), dtype=int) #sert à convertir l'objet deg qui est un dictionnaire en objet numpy.array
+P=np.outer(k,k)/(2*m) #produit dyadique de k avec k (= k*k^T, k un vecteur col) et à diviser la matrice retournée par 2m
+B=A-P #matrice de modularité
 
+val, vect = scipy.linalg.eigh(B, eigvals=(len(B)-1,len(B)-1)) #recupère la plus grande eigenval et son eigenvect associé 
+
+s_opt=np.array(vect.flatten()>0,dtype=int) #le vecteur s optimal vaut 1 qd la coordonnée de l'eigenvect est >0, 0 sinon.
 
 ############### Community detection ###########
 import community 
