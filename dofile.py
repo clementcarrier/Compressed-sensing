@@ -41,6 +41,29 @@ val, vect = scipy.linalg.eigh(B, eigvals=(len(B)-1,len(B)-1)) #recupère la plus
 
 s_opt=np.array(vect.flatten()>0,dtype=int) #le vecteur s optimal vaut 1 qd la coordonnée de l'eigenvect est >0, 0 sinon.
 
+############### Algorithm "Vector partitioning" ###############
+#Attention cas particulier, 2 groupes, 2 valeurs propres.
+p=2
+val_p, vect_p = scipy.linalg.eigh(B, eigvals=(len(B)-p,len(B)-1)) #calcule les p leading eigenval et eigenvect
+alpha=(1/(n-p))*np.sum(allval[:(len(allval)-p)]) #Détermination de alpha selon le paragraphe "D. Choice of \alpha" 
+Z=np.tile(np.sqrt(val_p-alpha),n).reshape(p,n) #Matrice intermédiaire (pour construire la matrice des r_i) du type Z=[sqrt(beta-alpha]|..|sqrt(beta-alpha)] on répète n fois le même vecteur
+r_mat=Z*vect_p.transpose() #Produit terme à terme de la mat inter avec les vecteurs propres (U dans l'équation (36) )
+#début de l'algo
+R=r_mat[:,0] #on met par défaut le premier individu dans le groupe 1
+s=np.zeros(n) #on initialise le vecteurs des individus à 0,...,0
+for iter in range(0,10):
+    for i in range(0,n): # On passe en revue tous les noeuds
+        if np.dot(R,r_mat[:,i])>0: #si le produit scalaire et positif ...
+            if s[i]!=1:            #et que l'individu i n'est pas déjà présent dans le groupe 1
+                R=R+r_mat[:,i]     #on augmente la matrice R de r_i
+                x[i]=1             #et on ajoute l'individu i au vecteurs des individus du groupe 1
+        else:                      #Si le produit scalaire est négatif ....
+            if s[i]==1:            #et que l'individu était présent dans le groupe 1
+                R=R-r_mat[:,i]     #on diminue la matrice R de r_i
+                s[i]=0             #et on retire cet individu du vecteurs des individus du groupe 1
+
+#En comparant s et s_opt, on voit que c'est à peu près similaire.
+
 ############### Community detection ###########
 import community 
 parts = community.best_partition(G_fb)
