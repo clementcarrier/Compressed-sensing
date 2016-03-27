@@ -69,7 +69,8 @@ import community
 parts = community.best_partition(G_fb)
 values = [parts.get(node) for node in G_fb.nodes()]
 
-
+## Calculate the modularity ##
+community.modularity(parts, G_fb)
 
 plt.axis("off")
 nx.draw_networkx(G_fb, pos = spring_pos, cmap = plt.get_cmap("jet"), node_color = values, node_size = 15, with_labels = False)
@@ -77,54 +78,6 @@ nx.draw_networkx(G_fb, pos = spring_pos, cmap = get_cmap(m), node_color = values
 #plt.savefig(graph, format='png')
 
 
-#dict.values(parts)[2]
-#dict.keys(parts)
-
-#dict.items(parts)
-#wanted_keys = [1] # The keys you want
-
-group1= [None] * 4039
-i = 0
-while i in G_fb.nodes():
-    if dict.values(parts)[i]==1 : group1[i]=dict.keys(parts)[i]
-    else: group1[i]=None
-    i = i + 1
-
-
-#import numpy as np
-#new_a = np.delete(group1, [None])
-
-G_1 = G_fb.subgraph(group1)
-nx.draw_networkx(G_1, pos = spring_pos, cmap = plt.get_cmap("jet"), node_size = 15, with_labels = False)
-
-
-#### Deux communautes #####
-
-group1_2= [None] * 4039
-values1_2= [None] * 4039
-i = 0
-while i in G_fb.nodes():
-    if dict.values(parts)[i]==1:
-        group1_2[i]=dict.keys(parts)[i]
-        values1_2[i]=dict.values(parts)[i]
-    elif dict.values(parts)[i]==2:
-        group1_2[i]=dict.keys(parts)[i]
-        values1_2[i]=dict.values(parts)[i]
-    else: 
-        group1_2[i]=None
-        values1_2[i]=None
-    i = i + 1 
-
-#import numpy as np
-#group1_2[1] = np.asarray(group1_2)
-
-
-G_1_2 = G_fb.subgraph(group1_2)
-values1_2 = [x for x in values1_2 if x != None]
-spring_pos_1_2 = nx.spring_layout(G_1_2)
-
-nx.draw_networkx(G_1_2, pos = spring_pos_1_2, cmap = plt.get_cmap("jet"), width=0.8 ,vmin=0, vmax=6 ,node_color = values1_2, node_size = 10, with_labels = False)
-print nx.info(G_1_2)
 
 
 
@@ -148,8 +101,7 @@ while i in G_fb.nodes():
         values3[i]=None
     i = i + 1 
 
-#import numpy as np
-#group1_2[1] = np.asarray(group1_2)
+
 
 
 G_3 = G_fb.subgraph(group3)
