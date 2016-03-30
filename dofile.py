@@ -64,7 +64,16 @@ for iter in range(0,10):
 
 #En comparant s et s_opt, on voit que c'est à peu près similaire.
 
-############### Community detection ###########
+
+
+
+
+
+
+
+
+
+############### Louvain algo ###########
 import community 
 parts = community.best_partition(G_fb)
 values = [parts.get(node) for node in G_fb.nodes()]
