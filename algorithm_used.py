@@ -75,27 +75,27 @@ for iter in range(0,10):
 
 ############### Louvain algo ###########
 import community 
-parts = community.best_partition(G_fb)
-values = [parts.get(node) for node in G_fb.nodes()]
+parts = community.best_partition(G)
+values = [parts.get(node) for node in G.nodes()]
 
 ## Calculate the modularity ##
-community.modularity(parts, G_fb)
+community.modularity(parts, G)
 
 plt.axis("off")
-nx.draw_networkx(G_fb, pos = spring_pos, cmap = plt.get_cmap("jet"), node_color = values, node_size = 15, with_labels = False)
-nx.draw_networkx(G_fb, pos = spring_pos, cmap = get_cmap(m), node_color = values, node_size = 15, with_labels = False)
+nx.draw_networkx(G, pos = spring_pos, cmap = plt.get_cmap("jet"), node_color = values, node_size = 15, with_labels = False)
+nx.draw_networkx(G, pos = spring_pos, cmap = get_cmap(m), node_color = values, node_size = 15, with_labels = False)
 #plt.savefig(graph, format='png')
 
 
 
 
 
-#### Trois communautes #####
+#### Pour ploter trois communautes pour les gros graphs (typiquement Facebook) #####
 
 group3= [None] * 4039
 values3= [None] * 4039
 i = 0
-while i in G_fb.nodes():
+while i in G.nodes():
     if dict.values(parts)[i]==1:
         group3[i]=dict.keys(parts)[i]
         values3[i]=dict.values(parts)[i]
@@ -113,7 +113,7 @@ while i in G_fb.nodes():
 
 
 
-G_3 = G_fb.subgraph(group3)
+G_3 = G.subgraph(group3)
 values3 = [x for x in values3 if x != None]
 spring_pos_3 = nx.spring_layout(G_3)
 
@@ -121,37 +121,6 @@ nx.draw_networkx(G_3, pos = spring_pos_3, cmap = plt.get_cmap("jet"), width=0.8 
 print nx.info(G_3)
 
 
-
-
-size = float(len(set(parts.values())))
-#pos = spring_pos
-count = 0.
-for com in set(parts.values()) :
-    count = count + 1.
-    list_nodes = [nodes for nodes in parts.keys()
-                                if parts[nodes] == com]
-    nx.draw_networkx_nodes(G_fb, spring_pos, list_nodes, node_size = 15,
-                                node_color = str(count / size))
-nx.draw_networkx_edges(G_fb,spring_pos, alpha=0.5)
-plt.show()
-
-
-
-
-
-##### Dendo graph ######
-
-dendo = community.generate_dendogram(G_fb)
-for level in range(len(dendo) - 1) :
-   print "partition at level", level, "is", community.partition_at_level(dendo, level)
-
-
-
-##### induced graph ####
-
-G=community.induced_graph(parts, G_fb)
-#nx.draw_networkx(G, pos = spring_pos, cmap = plt.get_cmap("jet"), node_color = values, node_size = 15, with_labels = False)
-nx.draw_networkx(G)
 
 
 
